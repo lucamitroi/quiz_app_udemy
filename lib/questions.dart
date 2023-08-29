@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:quizz_app_udemy/data/questions.dart';
 import 'answer_button.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class QuestionsScreen extends StatefulWidget {
-  const QuestionsScreen({super.key});
+  const QuestionsScreen({super.key, required this.onSelectAnswer});
+  final void Function(String answer) onSelectAnswer;
 
   @override
   State<QuestionsScreen> createState() {
@@ -13,7 +15,8 @@ class QuestionsScreen extends StatefulWidget {
 
 class _QuestionsScreenState extends State<QuestionsScreen> {
   var currentQuestionIndex = 0;
-  answerQuestion() {
+  answerQuestion(String selectedAnswer) {
+    widget.onSelectAnswer(selectedAnswer);
     setState(() {
       currentQuestionIndex += 1;
     });
@@ -31,16 +34,21 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(currentQuestion.text,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.white,
-                )),
+            Text(
+              currentQuestion.text,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.lato(
+                  color: const Color.fromARGB(255, 201, 153, 251),
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold),
+            ),
             const SizedBox(
               height: 30,
             ),
             ...currentQuestion.getShuffeledAnswers().map((item) {
-              return AnswerButton(item, answerQuestion);
+              return AnswerButton(item, () {
+                answerQuestion(item);
+              });
             }),
           ],
         ),
